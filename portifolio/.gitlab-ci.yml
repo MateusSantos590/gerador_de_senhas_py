@@ -1,0 +1,15 @@
+# Define que o trabalho será executado em uma imagem Docker com node
+image: node:latest
+
+# Define o estágio de "deploy" para o GitLab Pages
+pages:
+  stage: deploy
+  script:
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main

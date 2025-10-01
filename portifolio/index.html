@@ -1,525 +1,80 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gerador de QR Code para Currículo</title>
-    <style>
-        /* Reset e estilos base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Cabeçalho */
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            margin-bottom: 20px;
-        }
-
-        /* Layout principal */
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        @media (max-width: 900px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Painéis */
-        .panel {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .qr-panel {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Formulário */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        input[type="text"],
-        input[type="url"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus,
-        input[type="url"]:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-
-        /* Links adicionados */
-        .link-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            margin-bottom: 10px;
-        }
-
-        .link-info {
-            flex: 1;
-        }
-
-        .link-title {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .link-url {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .remove-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .remove-btn:hover {
-            background: #c0392b;
-        }
-
-        /* Botões */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2980b9;
-        }
-
-        .btn-success {
-            background: #2ecc71;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #27ae60;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-icon {
-            margin-right: 8px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        /* QR Code */
-        .qr-container {
-            background: white;
-            padding: 20px;
-            border: 2px dashed #bdc3c7;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            max-width: 300px;
-        }
-
-        .qr-header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .qr-name {
-            font-weight: 700;
-            font-size: 18px;
-            color: #2c3e50;
-        }
-
-        .qr-title {
-            font-size: 14px;
-            color: #7f8c8d;
-        }
-
-        .qr-code {
-            width: 200px;
-            height: 200px;
-            background: black;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .qr-placeholder {
-            background: white;
-            width: 190px;
-            height: 190px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #7f8c8d;
-            text-align: center;
-        }
-
-        .qr-links {
-            margin-top: 15px;
-        }
-
-        .links-title {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 8px;
-            color: #2c3e50;
-        }
-
-        .link-preview {
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            color: #7f8c8d;
-            margin-bottom: 5px;
-        }
-
-        .link-icon {
-            margin-right: 5px;
-        }
-
-        /* Seção de instruções */
-        .instructions {
-            margin-top: 40px;
-            background: #d6eaf8;
-            border-left: 4px solid #3498db;
-            padding: 20px;
-            border-radius: 6px;
-        }
-
-        .instructions h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        .instructions ol {
-            padding-left: 20px;
-        }
-
-        .instructions li {
-            margin-bottom: 10px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Certificados</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>QR Code para Currículo</h1>
-            <p class="subtitle">Adicione seus cursos e certificados para criar um QR Code profissional</p>
-        </header>
+    <h1>Meus Certificados</h1>
+    <p style="text-align: center;">Clique em um item para ver o QR Code e escanear o certificado.</p>
 
-        <div class="main-content">
-            <div class="panel">
-                <div class="form-group">
-                    <label for="name">Nome Completo</label>
-                    <input type="text" id="name" placeholder="Seu nome completo" value="Carlos Silva" />
-                </div>
-
-                <div class="form-group">
-                    <label for="title">Cargo/Profissão</label>
-                    <input type="text" id="title" placeholder="Ex: Desenvolvedor Front-end" value="Desenvolvedor Full Stack" />
-                </div>
-
-                <div class="form-group">
-                    <label>Links de Cursos e Certificados</label>
-
-                    <div id="links-container">
-                        <!-- Links serão adicionados aqui -->
-                    </div>
-
-                    <div class="form-group">
-                        <label for="link-title">Título do Link</label>
-                        <input type="text" id="link-title" placeholder="c:\Users\mateu\Downloads\Mateus-Santos-Telles-Seguranca-da-informacao-8211-Modulo-00-Pilares-e-Principais-Riscos-Certificado-20h-Estudonauta.pdf" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="link-url">URL do Link</label>
-                        <input type="url" id="link-url" placeholder="c:\Users\mateu\Downloads\Mateus-Santos-Telles-Git-e-Github-Certificado-20h-Estudonauta.pdf" />
-                    </div>
-
-                    <button id="add-link-btn" class="btn btn-primary">
-                        <span class="btn-icon">+</span> Adicionar Link
-                    </button>
-                </div>
-            </div>
-
-            <div class="panel qr-panel">
-                <h2>Preview do QR Code</h2>
-
-                <div class="qr-container">
-                    <div class="qr-header">
-                        <div class="qr-name" id="preview-name">Carlos Silva</div>
-                        <div class="qr-title" id="preview-title">Desenvolvedor Full Stack</div>
-                    </div>
-
-                    <div class="qr-code">
-                        <div class="qr-placeholder">
-                            <div>QR Code</div>
-                            <div>Gerado automaticamente</div>
-                        </div>
-                    </div>
-
-                    <div class="qr-links">
-                        <div class="links-title">Links incluídos:</div>
-                        <div id="preview-links">
-                            <!-- Preview dos links será adicionado aqui -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button id="download-btn" class="btn btn-success">
-                        <span class="btn-icon">⬇️</span> Baixar
-                    </button>
-
-                    <button id="share-btn" class="btn btn-primary">
-                        <span class="btn-icon">🔗</span> Compartilhar
-                    </button>
-                </div>
-
-                <div style="margin-top: 20px; text-align: center;">
-                    <p>Escaneie este QR Code para acessar seus cursos e certificados</p>
-                    <p style="font-size: 0.8rem; margin-top: 5px;">Dica: Imprima e cole no seu currículo físico!</p>
-                </div>
-            </div>
+    <div class="certificados-container">
+        <!-- Substitua "Nome do Certificado..." pelo nome real de cada curso -->
+        <div class="certificado-item" data-modal-target="#modal1" data-certificate-url="https://drive.google.com/file/d/13IYuhcGVCbeoBdo2flivM8x8RyCETbZ3/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal2" data-certificate-url="https://drive.google.com/file/d/18V01LSnMeVxkcTOzJUNx9PUCRI-qZBrZ/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal3" data-certificate-url="https://drive.google.com/file/d/1Oc2EgI3Ye6gL2VIiY1Y16XrDVinoFGK5/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal4" data-certificate-url="https://drive.google.com/file/d/1_kmROQDdYvAVyLJxRSLEzTsruNT4Rquw/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal5" data-certificate-url="https://drive.google.com/file/d/1aiWSxyssa0Ty9F86gxAxuq2fDx6Eeuzc/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal6" data-certificate-url="https://drive.google.com/file/d/1bA92kLA5cZDTVoDIAH_Z8gqTpNGZZgAp/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal7" data-certificate-url="https://drive.google.com/file/d/1bkyScFAplyBsv6leK471-WiR_YrFbihI/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal8" data-certificate-url="https://drive.google.com/file/d/1ldpgBHQp1tAvyc7cLWVBOPuehqdZO1kd/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal9" data-certificate-url="https://drive.google.com/file/d/1v1s_PVfeA4eJ6CMowanHjeVnYRiiWBN2/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal10" data-certificate-url="https://drive.google.com/file/d/1wFr7P6UWh2qRWYvZKycoLVSA85fXktoK/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal11" data-certificate-url="https://drive.google.com/file/d/1xqwKgLiz5GbvWfK-X0mdHoQBZOILabjt/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
+        <div class="certificado-item" data-modal-target="#modal12" data-certificate-url="https://drive.google.com/file/d/117rr_DDqbmKRVtQ644ZLPr1Tc-Mknb_e/view?usp=drive_link">
+            <h3>[Insira o Nome do Curso Aqui]</h3>
+            <p>Clique para ver o QR Code</p>
+        </div>
         </div>
 
-        <div class="instructions">
-            <h3>Como usar:</h3>
-            <ol>
-                <li>Preencha seus dados e adicione os links dos cursos/certificados</li>
-                <li>Baixe o QR Code e imprima para colar no currículo físico</li>
-                <li>Inclua também em versões digitais do seu currículo</li>
-                <li>Quando escaneado, o QR Code mostrará todos os seus links relevantes</li>
-            </ol>
+    <!-- Modal Genérico -->
+    <div class="modal" id="certificateModal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalCertificateName"></h2>
+            <p>Escaneie o QR code para visualizar</p>
+            <div id="qrcode" class="qrcode-container"></div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Elementos do DOM
-            const nameInput = document.getElementById('name');
-            const titleInput = document.getElementById('title');
-            const linkTitleInput = document.getElementById('link-title');
-            const linkUrlInput = document.getElementById('link-url');
-            const addLinkBtn = document.getElementById('add-link-btn');
-            const linksContainer = document.getElementById('links-container');
-            const previewName = document.getElementById('preview-name');
-            const previewTitle = document.getElementById('preview-title');
-            const previewLinks = document.getElementById('preview-links');
-            const downloadBtn = document.getElementById('download-btn');
-            const shareBtn = document.getElementById('share-btn');
-
-            // Array para armazenar os links
-            let links = [
-                { id: '1', title: 'Certificado React JS', url: 'https://cursos.example.com/react-certificate' },
-                { id: '2', title: 'Curso Node.js Avançado', url: 'https://cursos.example.com/nodejs-advanced' },
-                { id: '3', title: 'Especialização em Cloud AWS', url: 'https://cursos.example.com/aws-specialization' }
-            ];
-
-            // Atualizar preview quando os dados mudarem
-            function updatePreview() {
-                previewName.textContent = nameInput.value || 'Seu Nome';
-                previewTitle.textContent = titleInput.value || 'Profissional';
-
-                // Atualizar preview dos links
-                previewLinks.innerHTML = '';
-                if (links.length > 0) {
-                    links.slice(0, 3).forEach(link => {
-                        const linkElement = document.createElement('div');
-                        linkElement.className = 'link-preview';
-                        linkElement.innerHTML = `
-                            <span class="link-icon">🔗</span>
-                            <span>${link.title}</span>
-                        `;
-                        previewLinks.appendChild(linkElement);
-                    });
-
-                    if (links.length > 3) {
-                        const moreElement = document.createElement('div');
-                        moreElement.style.fontSize = '0.8rem';
-                        moreElement.style.color = '#7f8c8d';
-                        moreElement.textContent = `+${links.length - 3} mais...`;
-                        previewLinks.appendChild(moreElement);
-                    }
-                }
-            }
-
-            // Adicionar um novo link
-            function addLink() {
-                const title = linkTitleInput.value.trim();
-                const url = linkUrlInput.value.trim();
-
-                if (title && url) {
-                    const fullUrl = url.startsWith('http') ? url : `https://${url}`;
-
-                    // Adicionar ao array
-                    links.push({
-                        id: Date.now().toString(),
-                        title: title,
-                        url: fullUrl
-                    });
-
-                    // Atualizar a lista de links na UI
-                    renderLinks();
-
-                    // Limpar os campos de entrada
-                    linkTitleInput.value = '';
-                    linkUrlInput.value = '';
-
-                    // Atualizar o preview
-                    updatePreview();
-                }
-            }
-
-            // Renderizar a lista de links
-            function renderLinks() {
-                linksContainer.innerHTML = '';
-
-                links.forEach(link => {
-                    const linkElement = document.createElement('div');
-                    linkElement.className = 'link-item';
-                    linkElement.innerHTML = `
-                        <div class="link-info">
-                            <div class="link-title">${link.title}</div>
-                            <div class="link-url">${link.url}</div>
-                        </div>
-                        <button class="remove-btn" data-id="${link.id}">Remover</button>
-                    `;
-                    linksContainer.appendChild(linkElement);
-                });
-
-                // Adicionar event listeners aos botões de remover
-                document.querySelectorAll('.remove-btn').forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        const id = this.getAttribute('data-id');
-                        links = links.filter(link => link.id !== id);
-                        renderLinks();
-                        updatePreview();
-                    });
-                });
-            }
-
-            // Baixar o QR Code
-            function downloadQRCode() {
-                alert('QR Code baixado com sucesso! Em uma implementação real, isso geraria e faria o download de uma imagem de QR Code.');
-                // Em uma implementação real, aqui seria usado html2canvas ou uma biblioteca similar
-                // para converter o QR Code em uma imagem e fazer o download
-            }
-
-            // Compartilhar o QR Code
-            function shareQRCode() {
-                alert('Opções de compartilhamento mostradas. Em uma implementação real, isso usaria a Web Share API ou copiaria um link para a área de transferência.');
-                // Em uma implementação real, isso usaria a Web Share API se disponível
-                // ou copiaria um link para a área de transferência
-            }
-
-            // Event Listeners
-            nameInput.addEventListener('input', updatePreview);
-            titleInput.addEventListener('input', updatePreview);
-            addLinkBtn.addEventListener('click', addLink);
-            downloadBtn.addEventListener('click', downloadQRCode);
-            shareBtn.addEventListener('click', shareQRCode);
-
-            // Permitir adicionar link pressionando Enter no campo de URL
-            linkUrlInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    addLink();
-                }
-            });
-
-            // Inicializar a lista e preview
-            renderLinks();
-            updatePreview();
-        });
-    </script>
+    <!-- Biblioteca para gerar QR Code -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
